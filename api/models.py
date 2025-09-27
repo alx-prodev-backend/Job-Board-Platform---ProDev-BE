@@ -38,3 +38,32 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+class Profile(models.Model):
+    """
+    Contains additional information for a job Seeker.
+    A one to one rel ensure each user has only one profile.
+    """
+    user = models.OneToOneField(
+        User,
+        on_delete= models.CASCADE,
+        primary_key=True,
+        related_name='profile',
+        limit_choices_to={'role':User.Role.JOB_SEEKER}
+
+    )
+
+    full_name= models.CharField(max_length=255, blank=True)
+    headline= models.CharField(max_length=255, blank=True)
+    summary = models.TextField(blank=True, null=True)
+    resume_url = models.URLField(blank=True, null=True)
+    ##The many to many filed for skills is defined below, after skill model is created .
+    skills= models.ManyToManyField('Skill', blank=True, related_name= 'profiles')
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username
+
+####
+##
