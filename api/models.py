@@ -78,3 +78,39 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
 
+###
+# 03 core Board Models
+###
+class Job(models.Model):
+    """"
+    Represent a job posting on the platform
+
+    """
+    class JobType(models.TextChoices):
+        FULL_TIME= 'full-time', 'Full-Time'
+        PART_TIME = 'part-time','Part-Time'
+        CONTRACT= 'contract','Contract'
+        INTERNSHIP= 'internship', 'Intership'
+
+    Company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='Job')
+    posted_by= models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='job_posted',
+        limit_choices_to={User.Role.RECRUITER}
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    location = models.CharField(max_length=255, blank=True)
+    salary_min = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    salary_max = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    job_type = models.CharField(max_length=20, choices=JobType.choices, default=JobType.FULL_TIME)
+
+    # ManyToManyField handles the creation of the junction table (job_skills) automatically.
+    skills = models.ManyToManyField(Skill, blank=True, related_name='jobs')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
