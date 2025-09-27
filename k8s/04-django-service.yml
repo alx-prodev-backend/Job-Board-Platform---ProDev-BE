@@ -1,0 +1,13 @@
+# k8s/04-django-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service #  Nginx
+spec:
+  selector:
+    app: django-api
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP #
