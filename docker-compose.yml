@@ -1,0 +1,27 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: django_api
+    env_file:
+      - .env #
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn --bind 0.0.0.0:8000 job_board_project.wsgi:application"
+    expose:
+      - 8000
+    depends_on:
+      - db # ( Docker)
+
+  nginx:
+    build: ./nginx
+    container_name: nginx_server
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+#)
