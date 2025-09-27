@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Company, Profile
+from .models import User, Company, Profile, Job, Application
 
 
 ###
@@ -86,3 +86,28 @@ class RegisterSerializer(serializers.ModelSerializer):
             Profile.objects.create(user=user)
 
         return user
+
+
+###
+# Serializers for the core job board functionality
+###
+
+class JobSerializer(serializers.ModelSerializer):
+    """Serializer for the Job model."""
+    company = serializers.StringRelatedField() # Shows the company name instead of ID
+    skills = serializers.StringRelatedField(many=True) # Shows skill names
+
+    class Meta:
+        model = Job
+        fields = [
+            'id', 'title', 'company', 'description', 'location',
+            'salary_min', 'salary_max', 'job_type', 'skills', 'created_at'
+        ]
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    """Serializer for the Application model."""
+    # We can add more details here if needed, e.g., nested job or user info
+    class Meta:
+        model = Application
+        fields = '__all__'
+        read_only_fields = ['user'] # User is set automatically from the request
