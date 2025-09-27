@@ -66,4 +66,15 @@ class Profile(models.Model):
         return self.user.username
 
 ####
-##
+## 02 Supporting Models
+
+class Skill(models.Model):
+    """
+    stores skills like Pytho , SQL , etc.
+    This ensures skills are standardized across the platform.
+    """
+    name= models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
